@@ -3,6 +3,7 @@ package com.event_scheduler.server.service;
 import com.event_scheduler.server.dto.EventDto;
 import com.event_scheduler.server.model.Account;
 import com.event_scheduler.server.model.Event;
+import com.event_scheduler.server.repository.AccountRepository;
 import com.event_scheduler.server.repository.EventRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,17 +17,27 @@ public class EventService {
 
     private final EventRepository eventRepository;
 
+    private final AccountRepository accountRepository;
+
     private final AccountService accountService;
 
     public void addEvent(EventDto eventDto, Long accountId){
         Event event = new Event();
         event.setName(eventDto.getName());
-        event = eventRepository.save(event);
-        accountService.addEvent(event, accountId);
+        Account account = accountRepository.findAccountById(accountId);
+        event.setAccounts(new ArrayList<>());
+        event.getAccounts().add(account);
+        eventRepository.save(event);
     }
 
-    public void removeEvent(Long accountId){
-        eventRepository.deleteById(accountId);
+    public void removeEvent(Long eventId){
+        eventRepository.deleteById(eventId);
+    }
+
+    public void editEvent(Long eventId, EventDto eventDto){
+        Event event = eventRepository.findEventById(eventId);
+        event.setName(eventDto.getName());
+        eventRepository.save(event);
     }
 
     public List<Event> getEvents(){

@@ -37,4 +37,8 @@ public class AccountService {
         accountRepository.save(account);
     }
 
+    public void deleteAccount(Long accountId){
+        accountRepository.deleteById(accountId);
+    }
+
 }

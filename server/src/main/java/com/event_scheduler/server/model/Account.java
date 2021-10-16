@@ -6,6 +6,7 @@ import lombok.Data;
 import javax.persistence.*;
 import java.util.List;
 
+import static javax.persistence.CascadeType.*;
 
 @Entity
 @Data
@@ -20,7 +21,7 @@ public class Account {
 
     private String password;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "accounts")
     @JsonIgnoreProperties("accounts")
     private List<Event> events;
 

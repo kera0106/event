@@ -29,6 +29,11 @@ public class AccountsController {
         return accountService.getAccount(id);
     }
 
+    @DeleteMapping("/deleteAccount/{accountId}")
+    void deleteAccount(@PathVariable Long accountId){
+        accountService.deleteAccount(accountId);
+    }
+
     @PostMapping("/sign_up")
     void singUp(@RequestBody AccountDto profileDto){
         accountService.signUp(profileDto);
