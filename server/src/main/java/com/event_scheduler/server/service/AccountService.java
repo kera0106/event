@@ -1,7 +1,9 @@
 package com.event_scheduler.server.service;
 
 import com.event_scheduler.server.dto.AccountDto;
+import com.event_scheduler.server.dto.EventDto;
 import com.event_scheduler.server.model.Account;
+import com.event_scheduler.server.model.Event;
 import com.event_scheduler.server.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,12 @@ public class AccountService {
         profile.setLogin(profileDto.getLogin());
         profile.setPassword(profileDto.getPassword());
         return accountRepository.save(profile);
+    }
+
+    public void addEvent(Event event, Long accountId){
+        Account account = accountRepository.findAccountById(accountId);
+        account.getEvents().add(event);
+        accountRepository.save(account);
     }
 
 }

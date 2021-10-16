@@ -4,10 +4,7 @@ import com.event_scheduler.server.dto.EventDto;
 import com.event_scheduler.server.model.Event;
 import com.event_scheduler.server.service.EventService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,8 +19,13 @@ public class EventsController {
         return eventService.getEvents();
     }
 
-    @PostMapping("/addEvent")
-    void addEvent(@RequestBody EventDto eventDto) {
-        eventService.addEvent(eventDto);
+    @PostMapping("/addEvent/{accountId}")
+    void addEvent(@RequestBody EventDto eventDto, @PathVariable Long accountId) {
+        eventService.addEvent(eventDto, accountId);
+    }
+
+    @DeleteMapping("/deleteEvent/{eventId}")
+    void deleteEvent(@PathVariable Long eventId){
+        eventService.removeEvent(eventId);
     }
 }

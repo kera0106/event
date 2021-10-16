@@ -1,8 +1,10 @@
 package com.event_scheduler.server.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Data
@@ -14,4 +16,8 @@ public class Event {
     private Long id;
 
     private String name;
+
+    @ManyToMany(mappedBy = "events")
+    @JsonIgnoreProperties("events")
+    private List<Account> accounts;
 }
