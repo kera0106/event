@@ -1,6 +1,7 @@
 package com.event_scheduler.server.service;
 
 import com.event_scheduler.server.dto.EventDto;
+import com.event_scheduler.server.exceptions.AccountNotFoundException;
 import com.event_scheduler.server.model.Account;
 import com.event_scheduler.server.model.Event;
 import com.event_scheduler.server.repository.AccountRepository;
@@ -24,7 +25,7 @@ public class EventService {
     public void addEvent(EventDto eventDto, Long accountId){
         Event event = new Event();
         event.setName(eventDto.getName());
-        Account account = accountRepository.findAccountById(accountId);
+        Account account = accountRepository.findAccountById(accountId).orElseThrow(AccountNotFoundException::new);
         event.setAccounts(new ArrayList<>());
         event.getAccounts().add(account);
         eventRepository.save(event);

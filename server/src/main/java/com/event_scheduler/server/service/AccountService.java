@@ -2,6 +2,7 @@ package com.event_scheduler.server.service;
 
 import com.event_scheduler.server.dto.AccountDto;
 import com.event_scheduler.server.dto.EventDto;
+import com.event_scheduler.server.exceptions.AccountNotFoundException;
 import com.event_scheduler.server.model.Account;
 import com.event_scheduler.server.model.Event;
 import com.event_scheduler.server.repository.AccountRepository;
@@ -21,7 +22,7 @@ public class AccountService {
     }
 
     public Account getAccount(Long id){
-        return accountRepository.findAccountById(id);
+        return accountRepository.findAccountById(id).orElseThrow(AccountNotFoundException::new);
     }
 
     public Account signUp(AccountDto profileDto){
@@ -29,12 +30,6 @@ public class AccountService {
         profile.setLogin(profileDto.getLogin());
         profile.setPassword(profileDto.getPassword());
         return accountRepository.save(profile);
-    }
-
-    public void addEvent(Event event, Long accountId){
-        Account account = accountRepository.findAccountById(accountId);
-        account.getEvents().add(event);
-        accountRepository.save(account);
     }
 
     public void deleteAccount(Long accountId){

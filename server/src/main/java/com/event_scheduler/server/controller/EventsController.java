@@ -1,9 +1,11 @@
 package com.event_scheduler.server.controller;
 
 import com.event_scheduler.server.dto.EventDto;
+import com.event_scheduler.server.exceptions.AccountNotFoundException;
 import com.event_scheduler.server.model.Event;
 import com.event_scheduler.server.service.EventService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,5 +34,10 @@ public class EventsController {
     @DeleteMapping("/deleteEvent/{eventId}")
     void deleteEvent(@PathVariable Long eventId){
         eventService.removeEvent(eventId);
+    }
+
+    @ExceptionHandler(AccountNotFoundException.class)
+    public ResponseEntity handleException(AccountNotFoundException e) {
+        return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
     }
 }

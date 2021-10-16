@@ -1,9 +1,11 @@
 package com.event_scheduler.server.controller;
 
 import com.event_scheduler.server.dto.AccountDto;
+import com.event_scheduler.server.exceptions.AccountNotFoundException;
 import com.event_scheduler.server.model.Account;
 import com.event_scheduler.server.service.AccountService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,4 +41,8 @@ public class AccountsController {
         accountService.signUp(profileDto);
     }
 
+    @ExceptionHandler(AccountNotFoundException.class)
+    public ResponseEntity handleException(AccountNotFoundException e) {
+        return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
+    }
 }
