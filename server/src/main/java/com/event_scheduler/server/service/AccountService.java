@@ -6,6 +6,7 @@ import com.event_scheduler.server.exceptions.AccountNotFoundException;
 import com.event_scheduler.server.model.Account;
 import com.event_scheduler.server.model.Event;
 import com.event_scheduler.server.repository.AccountRepository;
+import com.event_scheduler.server.repository.EventAccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,8 @@ import java.util.List;
 public class AccountService {
 
     private final AccountRepository accountRepository;
+
+    private final EventAccountRepository eventAccountRepository;
 
     public List<Account> getAccounts(){
         return accountRepository.findAll();
@@ -33,6 +36,7 @@ public class AccountService {
     }
 
     public void deleteAccount(Long accountId){
+        eventAccountRepository.deleteAllByAccount_Id(accountId);
         accountRepository.deleteById(accountId);
     }
 

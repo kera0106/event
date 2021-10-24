@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 import static javax.persistence.CascadeType.*;
@@ -11,7 +12,7 @@ import static javax.persistence.CascadeType.*;
 @Entity
 @Data
 @Table(name="accounts")
-public class Account {
+public class Account{
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO, generator = "accounts_seq")
@@ -21,8 +22,7 @@ public class Account {
 
     private String password;
 
-    @ManyToMany(mappedBy = "accounts")
-    @JsonIgnoreProperties("accounts")
-    private List<Event> events;
+    @OneToMany(mappedBy = "account")
+    private List<EventAccount> eventAccounts;
 
 }

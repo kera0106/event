@@ -1,4 +1,5 @@
 create table events_accounts(
-    accounts_id bigint,
-    events_id bigint
+    account_id bigint,
+    event_id bigint,
+    is_author boolean not null
 );

@@ -31,9 +31,9 @@ public class EventsController {
         eventService.editEvent(eventId, eventDto);
     }
 
-    @DeleteMapping("/deleteEvent/{eventId}")
-    void deleteEvent(@PathVariable Long eventId){
-        eventService.removeEvent(eventId);
+    @DeleteMapping("/deleteEvent/{accountId}/{eventId}")
+    void deleteEvent(@PathVariable Long accountId, @PathVariable Long eventId){
+        eventService.removeEvent(accountId, eventId);
     }
 
     @ExceptionHandler(AccountNotFoundException.class)

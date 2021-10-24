@@ -17,7 +17,6 @@ public class Event {
 
     private String name;
 
-    @ManyToMany
-    @JsonIgnoreProperties("events")
-    private List<Account> accounts;
+    @OneToMany(mappedBy = "event")
+    private List<EventAccount> eventAccounts;
 }
