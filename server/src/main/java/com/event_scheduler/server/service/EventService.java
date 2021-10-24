@@ -1,7 +1,10 @@
 package com.event_scheduler.server.service;
 
+import com.event_scheduler.server.dto.EventAccountDto;
 import com.event_scheduler.server.dto.EventDto;
 import com.event_scheduler.server.exceptions.AccountNotFoundException;
+import com.event_scheduler.server.exceptions.EventAccountNotFoundException;
+import com.event_scheduler.server.exceptions.UserHasNoRightsException;
 import com.event_scheduler.server.model.Account;
 import com.event_scheduler.server.model.Event;
 import com.event_scheduler.server.model.EventAccount;
@@ -48,13 +51,26 @@ public class EventService {
         eventRepository.save(event);
     }
 
-    public void shareEvent(Long accountId, Long eventId, EventDto eventDto){
-        Account account = accountRepository.findAccountById(accountId).orElseThrow(AccountNotFoundException::new);
-        Event event = eventRepository.findEventById(eventId);
-        EventAccount eventAccount = new EventAccount();
+    public void shareEvent(Long accountId, EventAccountDto eventAccountDto){
+        EventAccount eventAccount = eventAccountRepository.findByAccount_IdAndEvent_Id(accountId, eventAccountDto.getEventId()).orElseThrow(EventAccountNotFoundException::new);
+        if (!eventAccount.isAuthor())
+            throw new UserHasNoRightsException();
+        Account account = accountRepository.findAccountById(eventAccountDto.getAccountId()).orElseThrow(AccountNotFoundException::new);
+        Event event = eventRepository.findEventById(eventAccountDto.getEventId());
+        eventAccount = new EventAccount();
         eventAccount.setAccount(account);
         eventAccount.setEvent(event);
-        eventAccount.setAuthor(eventDto.isAuthor());
+        eventAccount.setAuthor(eventAccountDto.isAuthor());
+        eventAccountRepository.save(eventAccount);
+    }
+
+    public void changeRole(Long accountId, EventAccountDto eventAccountDto){
+        EventAccount eventAccount = eventAccountRepository.findByAccount_IdAndEvent_Id(accountId, eventAccountDto.getEventId()).orElseThrow(EventAccountNotFoundException::new);
+        if (!eventAccount.isAuthor())
+            throw new UserHasNoRightsException();
+        eventAccount = eventAccountRepository.findByAccount_IdAndEvent_Id(eventAccountDto.getAccountId(), eventAccountDto.getEventId()).orElseThrow(EventAccountNotFoundException::new);
+        System.out.println(eventAccountDto.isAuthor());
+        eventAccount.setAuthor(eventAccountDto.isAuthor());
         eventAccountRepository.save(eventAccount);
     }
 
