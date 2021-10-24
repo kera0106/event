@@ -36,6 +36,12 @@ public class EventsController {
         eventService.removeEvent(accountId, eventId);
     }
 
+    @PostMapping("/shareEvent/{accountId}/{eventId}")
+    void shareEvent(@PathVariable Long accountId, @PathVariable Long eventId, @RequestBody EventDto eventDto){
+        eventService.shareEvent(accountId, eventId, eventDto);
+    }
+
+
     @ExceptionHandler(AccountNotFoundException.class)
     public ResponseEntity handleException(AccountNotFoundException e) {
         return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());

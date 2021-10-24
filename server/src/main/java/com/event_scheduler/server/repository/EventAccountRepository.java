@@ -12,11 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 public interface EventAccountRepository extends JpaRepository<EventAccount, Long> {
 
     @Transactional
-    @Modifying
-    @Query("delete from EventAccount e where e.account.id=?1 and e.event.id=?2 ")
-    void removeEvent(Long accountId, Long eventId);
-
-    @Transactional
     void deleteByAccount_IdAndEvent_Id(Long accountId, Long eventId);
 
     @Transactional

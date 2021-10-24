@@ -48,6 +48,16 @@ public class EventService {
         eventRepository.save(event);
     }
 
+    public void shareEvent(Long accountId, Long eventId, EventDto eventDto){
+        Account account = accountRepository.findAccountById(accountId).orElseThrow(AccountNotFoundException::new);
+        Event event = eventRepository.findEventById(eventId);
+        EventAccount eventAccount = new EventAccount();
+        eventAccount.setAccount(account);
+        eventAccount.setEvent(event);
+        eventAccount.setAuthor(eventDto.isAuthor());
+        eventAccountRepository.save(eventAccount);
+    }
+
     public List<Event> getEvents(){
         return eventRepository.findAll();
     }

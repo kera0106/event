@@ -1,7 +1,5 @@
 package com.event_scheduler.server.model.IdClasses;
 
-import com.event_scheduler.server.model.Account;
-import com.event_scheduler.server.model.Event;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -9,5 +9,6 @@ import java.util.List;
 public class EventDto {
     private Long id;
     private String name;
+    private boolean isAuthor;
     private List<Account> accounts;
 }
