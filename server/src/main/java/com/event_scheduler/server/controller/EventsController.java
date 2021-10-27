@@ -2,6 +2,7 @@ package com.event_scheduler.server.controller;
 
 import com.event_scheduler.server.dto.EventAccountDto;
 import com.event_scheduler.server.dto.EventDto;
+import com.event_scheduler.server.enums.Role;
 import com.event_scheduler.server.exceptions.AccountNotFoundException;
 import com.event_scheduler.server.exceptions.EventAccountNotFoundException;
 import com.event_scheduler.server.exceptions.UserHasNoRightsException;
@@ -29,9 +30,9 @@ public class EventsController {
         eventService.addEvent(eventDto, accountId);
     }
 
-    @PutMapping("/editEvent/{eventId}")
-    void editEvent(@PathVariable Long eventId, @RequestBody EventDto eventDto){
-        eventService.editEvent(eventId, eventDto);
+    @PutMapping("/editEvent/{accountId}/{eventId}")
+    void editEvent(@PathVariable Long accountId, @PathVariable Long eventId, @RequestBody EventDto eventDto){
+        eventService.editEvent(accountId, eventId, eventDto);
     }
 
     @DeleteMapping("/deleteEvent/{accountId}/{eventId}")
@@ -44,12 +45,20 @@ public class EventsController {
         eventService.shareEvent(accountId, eventAccountDto);
     }
 
-    @PutMapping("/changeRole/{accountId}")
-    void changeRole(@PathVariable Long accountId, @RequestBody EventAccountDto eventAccountDto){
-        System.out.println(eventAccountDto.isAuthor());
-        eventService.changeRole(accountId, eventAccountDto);
+    @PutMapping("/changeRole/{accountId}/manager")
+    void changeRoleManager(@PathVariable Long accountId, @RequestBody EventAccountDto eventAccountDto){
+        eventService.changeRole(accountId, eventAccountDto, Role.MANAGER);
     }
 
+    @PutMapping("/changeRole/{accountId}/writer")
+    void changeRoleWriter(@PathVariable Long accountId, @RequestBody EventAccountDto eventAccountDto){
+        eventService.changeRole(accountId, eventAccountDto, Role.WRITER);
+    }
+
+    @GetMapping("/getRole/{accountId}/{eventId}")
+    Role getRole(@PathVariable Long accountId, @PathVariable Long eventId){
+        return eventService.getRole(accountId, eventId);
+    }
 
     @ExceptionHandler(AccountNotFoundException.class)
     public ResponseEntity handleException(AccountNotFoundException e) {

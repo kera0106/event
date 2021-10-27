@@ -7,4 +7,7 @@ public class EventAccountDto {
     private Long accountId;
     private Long eventId;
     private boolean author;
+    private boolean manager;
+    private boolean writer;
+    private boolean role;
 }

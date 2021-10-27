@@ -2,6 +2,7 @@ package com.event_scheduler.server.service;
 
 import com.event_scheduler.server.dto.EventAccountDto;
 import com.event_scheduler.server.dto.EventDto;
+import com.event_scheduler.server.enums.Role;
 import com.event_scheduler.server.exceptions.AccountNotFoundException;
 import com.event_scheduler.server.exceptions.EventAccountNotFoundException;
 import com.event_scheduler.server.exceptions.UserHasNoRightsException;
@@ -38,6 +39,8 @@ public class EventService {
         eventAccount.setAccount(account);
         eventAccount.setEvent(event);
         eventAccount.setAuthor(true);
+        eventAccount.setManager(true);
+        eventAccount.setWriter(true);
         eventAccountRepository.save(eventAccount);
     }
 
@@ -45,36 +48,71 @@ public class EventService {
         eventAccountRepository.deleteByAccount_IdAndEvent_Id(accountId, eventId);
     }
 
-    public void editEvent(Long eventId, EventDto eventDto){
+    public void editEvent(Long accountId, Long eventId, EventDto eventDto){
+        if (!checkRole(accountId, eventId, Role.WRITER))
+            throw new UserHasNoRightsException();
         Event event = eventRepository.findEventById(eventId);
         event.setName(eventDto.getName());
         eventRepository.save(event);
     }
 
     public void shareEvent(Long accountId, EventAccountDto eventAccountDto){
-        EventAccount eventAccount = eventAccountRepository.findByAccount_IdAndEvent_Id(accountId, eventAccountDto.getEventId()).orElseThrow(EventAccountNotFoundException::new);
-        if (!eventAccount.isAuthor())
+        Role role = getRole(accountId, eventAccountDto.getEventId());
+        if (!(role == Role.MANAGER || role == Role.AUTHOR))
             throw new UserHasNoRightsException();
         Account account = accountRepository.findAccountById(eventAccountDto.getAccountId()).orElseThrow(AccountNotFoundException::new);
         Event event = eventRepository.findEventById(eventAccountDto.getEventId());
-        eventAccount = new EventAccount();
+        EventAccount eventAccount = new EventAccount();
         eventAccount.setAccount(account);
         eventAccount.setEvent(event);
-        eventAccount.setAuthor(eventAccountDto.isAuthor());
         eventAccountRepository.save(eventAccount);
     }
 
-    public void changeRole(Long accountId, EventAccountDto eventAccountDto){
-        EventAccount eventAccount = eventAccountRepository.findByAccount_IdAndEvent_Id(accountId, eventAccountDto.getEventId()).orElseThrow(EventAccountNotFoundException::new);
-        if (!eventAccount.isAuthor())
+    public void changeRole(Long accountId, EventAccountDto eventAccountDto, Role role){
+        if (!checkRole(accountId, eventAccountDto.getEventId(), Role.AUTHOR))
             throw new UserHasNoRightsException();
-        eventAccount = eventAccountRepository.findByAccount_IdAndEvent_Id(eventAccountDto.getAccountId(), eventAccountDto.getEventId()).orElseThrow(EventAccountNotFoundException::new);
-        System.out.println(eventAccountDto.isAuthor());
-        eventAccount.setAuthor(eventAccountDto.isAuthor());
-        eventAccountRepository.save(eventAccount);
+        setRole(eventAccountDto.getAccountId(), eventAccountDto.getEventId(), role, eventAccountDto.isRole());
     }
 
     public List<Event> getEvents(){
         return eventRepository.findAll();
+    }
+
+    private void setRole(Long accountId, Long eventId, Role role, boolean value){
+        EventAccount eventAccount = eventAccountRepository.findByAccount_IdAndEvent_Id(accountId, eventId).orElseThrow(EventAccountNotFoundException::new);
+        if (role == Role.MANAGER) {
+            eventAccount.setManager(value);
+        }
+        else if (role == Role.WRITER) {
+            eventAccount.setWriter(value);
+        }
+        eventAccountRepository.save(eventAccount);
+    }
+
+    private boolean checkRole(Long accountId, Long eventId, Role role){
+        EventAccount eventAccount = eventAccountRepository.findByAccount_IdAndEvent_Id(accountId, eventId).orElseThrow(EventAccountNotFoundException::new);
+        boolean isRole = false;
+        if (role == Role.MANAGER){
+            isRole = eventAccount.isManager();
+        }
+        else if (role == Role.WRITER){
+            isRole = eventAccount.isWriter();
+        }
+        return isRole;
+    }
+
+    public Role getRole(Long accountId, Long eventId){
+        EventAccount eventAccount = eventAccountRepository.findByAccount_IdAndEvent_Id(accountId, eventId).orElseThrow(EventAccountNotFoundException::new);
+        Role role = Role.READER;
+        if (eventAccount.isAuthor()) {
+            role = Role.AUTHOR;
+        }
+        else if (eventAccount.isManager()){
+            role = Role.MANAGER;
+        }
+        else if (eventAccount.isWriter()){
+            role = Role.WRITER;
+        }
+        return role;
     }
 }

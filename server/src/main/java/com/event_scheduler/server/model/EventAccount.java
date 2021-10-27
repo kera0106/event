@@ -26,4 +26,8 @@ public class EventAccount implements Serializable {
     private Account account;
 
     private boolean isAuthor;
+
+    private boolean isManager;
+
+    private boolean isWriter;
 }
