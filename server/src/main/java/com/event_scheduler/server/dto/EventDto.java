@@ -9,6 +9,7 @@ import java.util.List;
 public class EventDto {
     private Long id;
     private String name;
+    private String description;
     private boolean isAuthor;
     private List<Account> accounts;
 }

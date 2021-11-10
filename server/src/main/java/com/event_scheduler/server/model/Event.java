@@ -17,6 +17,11 @@ public class Event {
 
     private String name;
 
+    private String description;
+
     @OneToMany(mappedBy = "event")
     private List<EventAccount> eventAccounts;
+
+    @OneToMany(mappedBy = "event")
+    private List<Activity> activities;
 }

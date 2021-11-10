@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -33,6 +32,7 @@ public class EventService {
     public void addEvent(EventDto eventDto, Long accountId){
         Event event = new Event();
         event.setName(eventDto.getName());
+        event.setDescription(eventDto.getDescription());
         eventRepository.save(event);
         Account account = accountRepository.findAccountById(accountId).orElseThrow(AccountNotFoundException::new);
         EventAccount eventAccount = new EventAccount();
@@ -45,14 +45,24 @@ public class EventService {
     }
 
     public void removeEvent(Long accountId, Long eventId){
+        if (!checkRole(accountId, eventId, Role.WRITER))
+            throw new UserHasNoRightsException();
         eventAccountRepository.deleteByAccount_IdAndEvent_Id(accountId, eventId);
     }
 
-    public void editEvent(Long accountId, Long eventId, EventDto eventDto){
+    public void editEventName(Long accountId, Long eventId, EventDto eventDto){
         if (!checkRole(accountId, eventId, Role.WRITER))
             throw new UserHasNoRightsException();
         Event event = eventRepository.findEventById(eventId);
         event.setName(eventDto.getName());
+        eventRepository.save(event);
+    }
+
+    public void editEventDescription(Long accountId, Long eventId, EventDto eventDto){
+        if (!checkRole(accountId, eventId, Role.WRITER))
+            throw new UserHasNoRightsException();
+        Event event = eventRepository.findEventById(eventId);
+        event.setDescription(eventDto.getDescription());
         eventRepository.save(event);
     }
 
