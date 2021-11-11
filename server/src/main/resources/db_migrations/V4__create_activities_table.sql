@@ -1,4 +1,4 @@
-create table Activity(
+create table Activities(
     id bigint,
     name varchar,
     description varchar,

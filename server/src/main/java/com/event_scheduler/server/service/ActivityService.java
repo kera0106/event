@@ -1,13 +1,14 @@
 package com.event_scheduler.server.service;
 
 import com.event_scheduler.server.dto.ActivityDto;
-import com.event_scheduler.server.dto.EventDto;
 import com.event_scheduler.server.enums.Role;
 import com.event_scheduler.server.exceptions.EventAccountNotFoundException;
+import com.event_scheduler.server.exceptions.FinishDateBeforeStartException;
 import com.event_scheduler.server.exceptions.UserHasNoRightsException;
 import com.event_scheduler.server.model.Activity;
 import com.event_scheduler.server.model.Event;
 import com.event_scheduler.server.model.EventAccount;
+import com.event_scheduler.server.repository.AccountRepository;
 import com.event_scheduler.server.repository.ActivityRepository;
 import com.event_scheduler.server.repository.EventAccountRepository;
 import com.event_scheduler.server.repository.EventRepository;
@@ -29,6 +30,8 @@ public class ActivityService {
 
     private final EventAccountRepository eventAccountRepository;
 
+    private final AccountRepository accountRepository;
+
     public void addActivity(Long eventId, List<ActivityDto> activityDtos){
         Event event = eventRepository.findEventById(eventId);
         List<Activity> activities = new ArrayList<>();
@@ -37,8 +40,12 @@ public class ActivityService {
             activity.setEvent(event);
             activity.setName(activityDto.getName());
             activity.setDescription(activityDto.getDescription());
-            activity.setStart(LocalDateTime.of(activityDto.getStartDate(), activityDto.getStartTime()));
-            activity.setFinish(LocalDateTime.of(activityDto.getFinishDate(), activityDto.getFinishTime()));
+            LocalDateTime start = LocalDateTime.of(activityDto.getStartDate(), activityDto.getStartTime());
+            LocalDateTime finish = LocalDateTime.of(activityDto.getFinishDate(), activityDto.getFinishTime());
+            if (finish.isBefore(start))
+                throw new FinishDateBeforeStartException();
+            activity.setStart(start);
+            activity.setFinish(finish);
             activities.add(activity);
         }));
         activityRepository.saveAll(activities);
@@ -64,7 +71,10 @@ public class ActivityService {
         if (!checkRole(accountId, eventId, Role.WRITER))
             throw new UserHasNoRightsException();
         Activity activity = activityRepository.findActivityById(activityId);
-        activity.setStart(LocalDateTime.of(activityDto.getStartDate(), activityDto.getStartTime()));
+        LocalDateTime start = LocalDateTime.of(activityDto.getStartDate(), activityDto.getStartTime());
+        if (start.isAfter(activity.getFinish()))
+            throw new FinishDateBeforeStartException();
+        activity.setStart(start);
         activityRepository.save(activity);
     }
 
@@ -72,7 +82,10 @@ public class ActivityService {
         if (!checkRole(accountId, eventId, Role.WRITER))
             throw new UserHasNoRightsException();
         Activity activity = activityRepository.findActivityById(activityId);
-        activity.setFinish(LocalDateTime.of(activityDto.getFinishDate(), activityDto.getFinishTime()));
+        LocalDateTime finish = LocalDateTime.of(activityDto.getFinishDate(), activityDto.getFinishTime());
+        if (finish.isBefore(activity.getStart()))
+            throw new FinishDateBeforeStartException();
+        activity.setFinish(finish);
         activityRepository.save(activity);
     }
 
@@ -80,6 +93,12 @@ public class ActivityService {
         if (!checkRole(accountId, eventId, Role.WRITER))
             throw new UserHasNoRightsException();
         activityRepository.deleteById(activityId);
+    }
+
+    public List<Activity> getActivitiesAtDay(Long accountId, LocalDate day){
+        LocalDateTime startOfDay = day.atStartOfDay();
+        LocalDateTime finishOfDay = day.atTime(23, 59, 59);
+        return activityRepository.activitiesAtDay(accountId, startOfDay, finishOfDay);
     }
 
     private boolean checkRole(Long accountId, Long eventId, Role role){
