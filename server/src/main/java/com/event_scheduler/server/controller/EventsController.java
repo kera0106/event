@@ -7,6 +7,7 @@ import com.event_scheduler.server.exceptions.AccountNotFoundException;
 import com.event_scheduler.server.exceptions.EventAccountNotFoundException;
 import com.event_scheduler.server.exceptions.UserHasNoRightsException;
 import com.event_scheduler.server.model.Event;
+import com.event_scheduler.server.model.Invitation;
 import com.event_scheduler.server.service.EventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -47,7 +48,17 @@ public class EventsController {
 
     @PostMapping("/shareEvent/{accountId}")
     void shareEvent(@PathVariable Long accountId, @RequestBody EventAccountDto eventAccountDto){
-        eventService.shareEvent(accountId, eventAccountDto);
+       eventService.shareEvent(accountId, eventAccountDto);
+    }
+
+    @GetMapping("/invitedEvents/{accountId}")
+    List<Invitation> getInvitedEvents(@PathVariable Long accountId) {
+       return eventService.invitedEvents(accountId);
+    }
+
+    @PostMapping("/confirmInvitation/{accountId}/{eventId}")
+    void confirmInvitation(@PathVariable Long accountId, @PathVariable Long eventId){
+        eventService.confirmInvitation(accountId, eventId);
     }
 
     @PutMapping("/changeRole/{accountId}/manager")
