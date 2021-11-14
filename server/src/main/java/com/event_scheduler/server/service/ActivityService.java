@@ -14,10 +14,12 @@ import com.event_scheduler.server.repository.EventAccountRepository;
 import com.event_scheduler.server.repository.EventRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @Service
@@ -98,7 +100,7 @@ public class ActivityService {
     public List<Activity> getActivitiesAtDay(Long accountId, LocalDate day){
         LocalDateTime startOfDay = day.atStartOfDay();
         LocalDateTime finishOfDay = day.atTime(23, 59, 59);
-        return activityRepository.activitiesAtDay(accountId, startOfDay, finishOfDay);
+        return activityRepository.activitiesAtPeriod(accountId, startOfDay, finishOfDay);
     }
 
     private boolean checkRole(Long accountId, Long eventId, Role role){
@@ -111,6 +113,32 @@ public class ActivityService {
             isRole = eventAccount.isWriter();
         }
         return isRole;
+    }
+
+    public List<Activity> getConflictActivities(Long accountId, List<ActivityDto> activityDtos){
+        List<Activity> conflictActivities = new ArrayList<>();
+        activityDtos.forEach((activityDto -> {
+            LocalDateTime start = LocalDateTime.of(activityDto.getStartDate(), activityDto.getStartTime());
+            LocalDateTime finish = LocalDateTime.of(activityDto.getFinishDate(), activityDto.getFinishTime());
+            conflictActivities.addAll(activityRepository.activitiesAtPeriod(accountId, start, finish));
+        }));
+        removeRepeatActivities(conflictActivities);
+        return conflictActivities;
+    }
+
+    private void removeRepeatActivities(List<Activity> activities){
+        List<Long> existingActivityId = new ArrayList<>();
+        Iterator<Activity> iterator = activities.iterator();
+        Activity activity;
+        while (iterator.hasNext()){
+            activity = iterator.next();
+            if (existingActivityId.contains(activity.getId())){
+                iterator.remove();
+            }
+            else {
+                existingActivityId.add(activity.getId());
+            }
+        }
     }
 
     public List<Activity> getActivities(){

@@ -54,6 +54,11 @@ public class ActivityController {
         return activityService.getActivitiesAtDay(accountId, LocalDate.parse(day));
     }
 
+    @GetMapping("/conflictActivities/{accountId}")
+    List<Activity> getConflictActivities(@PathVariable Long accountId, @RequestBody List<ActivityDto> activityDtos){
+        return activityService.getConflictActivities(accountId, activityDtos);
+    }
+
     @GetMapping("/activities")
     List<Activity> getActivities() {
         return activityService.getActivities();

@@ -20,5 +20,5 @@ public interface ActivityRepository extends JpaRepository<Activity, Long> {
             "           ((activity.start <= ?2 and activity.finish >= ?2) " +
             "           or " +
             "           (activity.start >= ?2 and activity.start <= ?3))")
-    List<Activity> activitiesAtDay(Long accountId, LocalDateTime startOfDay, LocalDateTime finishOfDay);
+    List<Activity> activitiesAtPeriod(Long accountId, LocalDateTime startOfPeriod, LocalDateTime finishOfPeriod);
 }
