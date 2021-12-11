@@ -14,8 +14,6 @@ import com.event_scheduler.server.repository.EventAccountRepository;
 import com.event_scheduler.server.repository.EventRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -31,8 +29,6 @@ public class ActivityService {
     private final EventRepository eventRepository;
 
     private final EventAccountRepository eventAccountRepository;
-
-    private final AccountRepository accountRepository;
 
     public void addActivity(Long eventId, List<ActivityDto> activityDtos){
         Event event = eventRepository.findEventById(eventId);

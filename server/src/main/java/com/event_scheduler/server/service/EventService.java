@@ -9,11 +9,9 @@ import com.event_scheduler.server.exceptions.UserHasNoRightsException;
 import com.event_scheduler.server.model.Account;
 import com.event_scheduler.server.model.Event;
 import com.event_scheduler.server.model.EventAccount;
-import com.event_scheduler.server.model.Invitation;
 import com.event_scheduler.server.repository.AccountRepository;
 import com.event_scheduler.server.repository.EventAccountRepository;
 import com.event_scheduler.server.repository.EventRepository;
-import com.event_scheduler.server.repository.InvitationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -30,8 +28,6 @@ public class EventService {
 
     private final EventAccountRepository eventAccountRepository;
 
-    private final InvitationRepository invitationRepository;
-
     @Transactional
     public void addEvent(EventDto eventDto, Long accountId){
         Event event = new Event();
@@ -45,6 +41,7 @@ public class EventService {
         eventAccount.setAuthor(true);
         eventAccount.setManager(true);
         eventAccount.setWriter(true);
+        eventAccount.setAccepted(true);
         eventAccountRepository.save(eventAccount);
     }
 
@@ -74,15 +71,17 @@ public class EventService {
         Role role = getRole(accountId, eventAccountDto.getEventId());
         if (!(role == Role.MANAGER || role == Role.AUTHOR))
             throw new UserHasNoRightsException();
-        Invitation invitation = new Invitation();
-        invitation.setFromId(accountId);
-        invitation.setToId(eventAccountDto.getAccountId());
-        invitation.setEventId(eventAccountDto.getEventId());
-        invitationRepository.save(invitation);
+        Account account = accountRepository.findAccountById(eventAccountDto.getAccountId()).orElseThrow(AccountNotFoundException::new);
+        Event event = eventRepository.findEventById(eventAccountDto.getEventId());
+        EventAccount eventAccount = new EventAccount();
+        eventAccount.setAccount(account);
+        eventAccount.setEvent(event);
+        eventAccount.setAccepted(false);
+        eventAccountRepository.save(eventAccount);
     }
 
-    public List<Invitation> invitedEvents(Long accountId){
-        return invitationRepository.findAllByToId(accountId);
+    public List<Event> invitedEvents(Long accountId){
+        return eventAccountRepository.findInvitedEvents(accountId);
     }
 
     public void changeRole(Long accountId, EventAccountDto eventAccountDto, Role role){
@@ -92,13 +91,9 @@ public class EventService {
     }
 
     public void confirmInvitation(Long accountId, Long eventId){
-        Account account = accountRepository.findAccountById(accountId).orElseThrow(AccountNotFoundException::new);
-        Event event = eventRepository.findEventById(eventId);
-        EventAccount eventAccount = new EventAccount();
-        eventAccount.setAccount(account);
-        eventAccount.setEvent(event);
+        EventAccount eventAccount = eventAccountRepository.findByAccount_IdAndEvent_Id(accountId, eventId).orElseThrow(EventAccountNotFoundException::new);
+        eventAccount.setAccepted(true);
         eventAccountRepository.save(eventAccount);
-        invitationRepository.deleteByToIdAndEventId(accountId, eventId);
     }
 
     public List<Event> getEvents(){

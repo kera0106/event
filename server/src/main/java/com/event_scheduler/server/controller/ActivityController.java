@@ -1,7 +1,6 @@
 package com.event_scheduler.server.controller;
 
 import com.event_scheduler.server.dto.ActivityDto;
-import com.event_scheduler.server.dto.EventDto;
 import com.event_scheduler.server.exceptions.FinishDateBeforeStartException;
 import com.event_scheduler.server.exceptions.UserHasNoRightsException;
 import com.event_scheduler.server.model.Activity;

@@ -15,6 +15,7 @@ public interface ActivityRepository extends JpaRepository<Activity, Long> {
 
     @Query("select activity from Activity activity, EventAccount eventAccount " +
             "   where eventAccount.account.id = ?1 " +
+            "       and eventAccount.isAccepted = true" +
             "       and activity.event = eventAccount.event " +
             "       and " +
             "           ((activity.start <= ?2 and activity.finish >= ?2) " +

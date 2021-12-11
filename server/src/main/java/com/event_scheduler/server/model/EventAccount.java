@@ -30,4 +30,6 @@ public class EventAccount implements Serializable {
     private boolean isManager;
 
     private boolean isWriter;
+
+    private boolean isAccepted;
 }

@@ -10,4 +10,5 @@ public class EventAccountDto {
     private boolean manager;
     private boolean writer;
     private boolean role;
+    private boolean accepted;
 }

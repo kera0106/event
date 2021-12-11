@@ -7,7 +7,6 @@ import com.event_scheduler.server.exceptions.AccountNotFoundException;
 import com.event_scheduler.server.exceptions.EventAccountNotFoundException;
 import com.event_scheduler.server.exceptions.UserHasNoRightsException;
 import com.event_scheduler.server.model.Event;
-import com.event_scheduler.server.model.Invitation;
 import com.event_scheduler.server.service.EventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -52,7 +51,7 @@ public class EventsController {
     }
 
     @GetMapping("/invitedEvents/{accountId}")
-    List<Invitation> getInvitedEvents(@PathVariable Long accountId) {
+    List<Event> getInvitedEvents(@PathVariable Long accountId) {
        return eventService.invitedEvents(accountId);
     }
 
