@@ -1,9 +1,12 @@
-import './App.css';
-import {SignIn} from "./components/SignIn";
+import './App.css'
+import Main from "./components/MainComponent"
+import {BrowserRouter} from "react-router-dom";
 
 function App() {
   return (
-    <SignIn/>
+      <BrowserRouter>
+        <Main/>
+      </BrowserRouter>
   );
 }
 
