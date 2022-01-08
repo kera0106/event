@@ -1,5 +1,6 @@
 package com.event_scheduler.server.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
@@ -20,9 +21,15 @@ public class Account{
 
     private String login;
 
+    @JsonIgnore
     private String password;
 
+    private String firstname;
+
+    private String lastname;
+
     @OneToMany(mappedBy = "account")
+    @JsonIgnoreProperties({"account", "event.activities"})
     private List<EventAccount> eventAccounts;
 
 }

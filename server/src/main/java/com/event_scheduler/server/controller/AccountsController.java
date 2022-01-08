@@ -1,6 +1,7 @@
 package com.event_scheduler.server.controller;
 
 import com.event_scheduler.server.dto.AccountDto;
+import com.event_scheduler.server.exceptions.AccountAlreadyExists;
 import com.event_scheduler.server.exceptions.AccountNotFoundException;
 import com.event_scheduler.server.model.Account;
 import com.event_scheduler.server.service.AccountService;
@@ -15,11 +16,6 @@ import java.util.List;
 public class AccountsController {
 
     private final AccountService accountService;
-
-    @GetMapping("/hello")
-    String hello(){
-        return "Hello";
-    }
 
     @GetMapping("/accounts")
     List<Account> getAccounts(){
@@ -41,8 +37,23 @@ public class AccountsController {
         accountService.signUp(profileDto);
     }
 
+    @PutMapping("/editAccountName/{accountId}")
+    void editAccountName(@PathVariable Long accountId, @RequestBody AccountDto profileDto) {
+        accountService.editAccountName(accountId, profileDto);
+    }
+
+    @PutMapping("/editAccountLogin/{accountId}")
+    void editAccountLogin(@PathVariable Long accountId, @RequestBody AccountDto profileDto) {
+        accountService.editAccountLogin(accountId, profileDto);
+    }
+
     @ExceptionHandler(AccountNotFoundException.class)
     public ResponseEntity handleException(AccountNotFoundException e) {
+        return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
+    }
+
+    @ExceptionHandler(AccountAlreadyExists.class)
+    public ResponseEntity handleException(AccountAlreadyExists e) {
         return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
     }
 }
