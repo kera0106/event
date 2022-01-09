@@ -9,7 +9,10 @@ class HomePage extends Component {
                 <div className="container">
                     <div className="row">
                         <div className="col-12 col-xl-9">
-                            <Events/>
+                            <Events events={this.props.events}
+                                    isLoading={this.props.isLoading}
+                                    errMess={this.props.errMess}
+                            />
                         </div>
                         <div className="col-12 col-lg-10 offset-lg-1 col-xl-3 offset-xl-0">
                             <EventManager/>

@@ -26,6 +26,14 @@ class Header extends Component{
     }
 
     render() {
+
+        const renderName = () => {
+            if (this.props.name.firstname && this.props.name.lastname)
+                return this.props.name.firstname + " " + this.props.name.lastname
+            else
+                return ""
+        }
+
         return(
             <div className="title-background">
                 <Navbar dark expand="md">
@@ -45,7 +53,7 @@ class Header extends Component{
                             </Nav>
                             <Nav className="ms-auto" navbar>
                                 <NavbarText className="name me-3 mt-1">
-                                    Фамилия Имя
+                                    {renderName()}
                                 </NavbarText>
                                 <NavItem>
                                     <Button className="me-3 mt-1" onClick={this.toggleModal}><span className="fa fa-cogs fa-lg"></span> Настройки</Button>
