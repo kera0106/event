@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -48,18 +49,18 @@ public class AccountService {
 
     public void editAccountName(Long accountId, AccountDto profileDto){
         Account account = accountRepository.findAccountById(accountId).orElseThrow(AccountNotFoundException::new);
+        if(accountRepository.findAccountByLogin(profileDto.getLogin()).isPresent()){
+            throw new AccountAlreadyExists();
+        }
+        account.setLogin(profileDto.getLogin());
         account.setFirstname(profileDto.getFirstname());
         account.setLastname(profileDto.getLastname());
         accountRepository.save(account);
     }
 
-    public void editAccountLogin(Long accountId, AccountDto profileDto){
-        Account account = accountRepository.findAccountById(accountId).orElseThrow(AccountNotFoundException::new);
-        if(accountRepository.findAccountByLogin(profileDto.getLogin()).isPresent()){
-            throw new AccountAlreadyExists();
-        }
-        account.setLogin(profileDto.getLogin());
-        accountRepository.save(account);
+    public boolean isLoginExists(Long accountId, String login){
+        Optional<Account> accountOptional = accountRepository.findAccountByLogin(login);
+        return accountOptional.filter(account -> account.getId() != accountId).isPresent();
     }
 
 }

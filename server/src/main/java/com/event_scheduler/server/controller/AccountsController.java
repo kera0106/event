@@ -40,14 +40,14 @@ public class AccountsController {
         accountService.signUp(profileDto);
     }
 
-    @PutMapping("/editAccountName/{accountId}")
-    void editAccountName(@PathVariable Long accountId, @RequestBody AccountDto profileDto) {
+    @PutMapping("/editAccount/{accountId}")
+    void editAccount(@PathVariable Long accountId, @RequestBody AccountDto profileDto) {
         accountService.editAccountName(accountId, profileDto);
     }
 
-    @PutMapping("/editAccountLogin/{accountId}")
-    void editAccountLogin(@PathVariable Long accountId, @RequestBody AccountDto profileDto) {
-        accountService.editAccountLogin(accountId, profileDto);
+    @GetMapping("/isLoginExists/{accountId}")
+    boolean isLoginExists(@PathVariable Long accountId, @RequestBody String login) {
+        return accountService.isLoginExists(accountId, login);
     }
 
     @ExceptionHandler(AccountNotFoundException.class)
