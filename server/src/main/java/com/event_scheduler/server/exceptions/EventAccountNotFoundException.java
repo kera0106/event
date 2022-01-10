@@ -7,7 +7,7 @@ public class EventAccountNotFoundException extends RuntimeException{
     private HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 
     public EventAccountNotFoundException(){
-        super("Note event-account not found in repository");
+        super("Мероприятие не найдено");
     }
 
     public HttpStatus getHttpStatus() {

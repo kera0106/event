@@ -7,7 +7,7 @@ public class FinishDateBeforeStartException extends RuntimeException {
     private HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 
     public FinishDateBeforeStartException() {
-        super("Finish timestamp of activity can not be before start timestamp");
+        super("Окончание события должно следовать после его начала");
     }
 
     public HttpStatus getHttpStatus() {

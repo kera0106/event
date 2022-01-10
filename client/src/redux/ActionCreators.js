@@ -15,6 +15,8 @@ export const getAccountData = () => (dispatch) => {
             }
         },
         error => {
+            if (error.response)
+                throw new Error(error.response.data)
             throw new Error(error.message);
         })
         .then(response => response.data)

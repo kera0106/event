@@ -6,7 +6,7 @@ public class AccountAlreadyExists extends RuntimeException{
     private HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 
     public AccountAlreadyExists(){
-        super("Account with entered login already exists");
+        super("Указанный логин уже используется");
     }
 
     public HttpStatus getHttpStatus() {
