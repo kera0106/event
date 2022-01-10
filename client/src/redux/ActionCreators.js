@@ -5,7 +5,8 @@ export const getAccountData = () => (dispatch) => {
 
     dispatch(accountLoading())
 
-    return serverApi.getAccount().then(response => {
+    const userId = localStorage.getItem('userId')
+    return serverApi.getAccount(userId).then(response => {
             if (response) {
                 return response;
             } else {
@@ -15,8 +16,12 @@ export const getAccountData = () => (dispatch) => {
             }
         },
         error => {
-            if (error.response)
+            console.log(error.response)
+            if (error.response) {
+                if (typeof error.response.data === 'object')
+                    throw new Error("Неизвестная ошибка")
                 throw new Error(error.response.data)
+            }
             throw new Error(error.message);
         })
         .then(response => response.data)

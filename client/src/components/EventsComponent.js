@@ -37,6 +37,13 @@ class Events extends Component{
                 </div>
             )
         }
+        else if (this.props.events.length === 0){
+            return(
+                <div className="mt-5">
+                    <h3>Нет мероприятий</h3>
+                </div>
+            )
+        }
         else {
             const events = this.props.events.map((event) => {
                 return (
