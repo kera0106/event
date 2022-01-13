@@ -1,7 +1,7 @@
 package com.event_scheduler.server.controller;
 
 import com.event_scheduler.server.dto.AccountDto;
-import com.event_scheduler.server.exceptions.AccountAlreadyExists;
+import com.event_scheduler.server.exceptions.LoginAlreadyExists;
 import com.event_scheduler.server.exceptions.AccountNotFoundException;
 import com.event_scheduler.server.model.Account;
 import com.event_scheduler.server.service.AccountService;
@@ -45,8 +45,8 @@ public class AccountsController {
         accountService.editAccountName(accountId, profileDto);
     }
 
-    @GetMapping("/isLoginExists/{accountId}")
-    boolean isLoginExists(@PathVariable Long accountId, @RequestBody String login) {
+    @GetMapping("/isLoginExists/{accountId}/{login}")
+    boolean isLoginExists(@PathVariable Long accountId, @PathVariable String login) {
         return accountService.isLoginExists(accountId, login);
     }
 
@@ -55,8 +55,8 @@ public class AccountsController {
         return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
     }
 
-    @ExceptionHandler(AccountAlreadyExists.class)
-    public ResponseEntity handleException(AccountAlreadyExists e) {
+    @ExceptionHandler(LoginAlreadyExists.class)
+    public ResponseEntity handleException(LoginAlreadyExists e) {
         return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
     }
 }

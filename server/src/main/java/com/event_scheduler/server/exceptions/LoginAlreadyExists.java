@@ -2,10 +2,10 @@ package com.event_scheduler.server.exceptions;
 
 import org.springframework.http.HttpStatus;
 
-public class AccountAlreadyExists extends RuntimeException{
+public class LoginAlreadyExists extends RuntimeException{
     private HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 
-    public AccountAlreadyExists(){
+    public LoginAlreadyExists(){
         super("Указанный логин уже используется");
     }
 

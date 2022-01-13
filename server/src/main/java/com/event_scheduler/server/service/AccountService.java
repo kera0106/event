@@ -2,7 +2,7 @@ package com.event_scheduler.server.service;
 
 import com.event_scheduler.server.dto.AccountDto;
 import com.event_scheduler.server.dto.EventDto;
-import com.event_scheduler.server.exceptions.AccountAlreadyExists;
+import com.event_scheduler.server.exceptions.LoginAlreadyExists;
 import com.event_scheduler.server.exceptions.AccountNotFoundException;
 import com.event_scheduler.server.model.Account;
 import com.event_scheduler.server.model.Event;
@@ -32,7 +32,7 @@ public class AccountService {
 
     public Account signUp(AccountDto profileDto){
         if(accountRepository.findAccountByLogin(profileDto.getLogin()).isPresent()){
-            throw new AccountAlreadyExists();
+            throw new LoginAlreadyExists();
         }
         Account profile = new Account();
         profile.setLogin(profileDto.getLogin());
@@ -49,8 +49,10 @@ public class AccountService {
 
     public void editAccountName(Long accountId, AccountDto profileDto){
         Account account = accountRepository.findAccountById(accountId).orElseThrow(AccountNotFoundException::new);
-        if(accountRepository.findAccountByLogin(profileDto.getLogin()).isPresent()){
-            throw new AccountAlreadyExists();
+        Optional<Account> accountOptional = accountRepository.findAccountByLogin(profileDto.getLogin());
+        boolean isLoginAlreadyExists = accountOptional.filter(accountWithLogin -> accountWithLogin.getId() != accountId).isPresent();
+        if(isLoginAlreadyExists){
+            throw new LoginAlreadyExists();
         }
         account.setLogin(profileDto.getLogin());
         account.setFirstname(profileDto.getFirstname());

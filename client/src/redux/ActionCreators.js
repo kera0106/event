@@ -16,7 +16,6 @@ export const getAccountData = () => (dispatch) => {
             }
         },
         error => {
-            console.log(error.response)
             if (error.response) {
                 if (typeof error.response.data === 'object')
                     throw new Error("Неизвестная ошибка")
@@ -26,6 +25,7 @@ export const getAccountData = () => (dispatch) => {
         })
         .then(response => response.data)
         .then(data => dispatch(addAccountData(data)))
+        .then(data => dispatch(setSettingForm(data)))
         .catch(error => dispatch(accountFailed((error.message))))
 }
 
@@ -41,4 +41,9 @@ export const accountFailed = (errmess) => ({
 export const addAccountData = (data) => ({
     type: ActionTypes.ADD_ACCOUNT_DATA,
     payload: data
+});
+
+export const setSettingForm = (data) => ({
+    type: ActionTypes.SET_SETTING_FORM_DATA,
+    payload: data.payload
 });
