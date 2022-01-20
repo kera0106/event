@@ -1,6 +1,7 @@
 import {Component} from "react";
 import {Button, Card, CardText, CardTitle} from "reactstrap";
 import {Loading} from "./LoadingComponent";
+import {Link} from "react-router-dom";
 
 const RenderEvent = ({id, title, description}) => {
     return(
@@ -9,12 +10,14 @@ const RenderEvent = ({id, title, description}) => {
                 <CardTitle tag="h5">
                     {title}
                 </CardTitle>
-                <CardText>
+                <CardText className="ms-0">
                     {description}
                 </CardText>
-                <Button>
-                    Перейти
-                </Button>
+                <Link to={`/event/${id}`} className="ms-auto me-auto">
+                    <Button>
+                        Перейти
+                    </Button>
+                </Link>
             </Card>
         </div>
     )
@@ -45,18 +48,17 @@ class Events extends Component{
             )
         }
         else {
-            const events = this.props.events.map((event) => {
+            return this.props.events.map((event) => {
                 return (
-                    <RenderEvent key={event.id} title={event.name} description={event.description}/>
+                    <RenderEvent key={event.id} id={event.id} title={event.name} description={event.description}/>
                 )
             })
-            return events
         }
     }
 
     render() {
         return(
-            <div className="container">
+            <div className="container mb-md-3">
                 <div className="row">
                     {this.renderAllEvents()}
                 </div>

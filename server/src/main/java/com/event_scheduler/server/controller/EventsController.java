@@ -25,6 +25,11 @@ public class EventsController {
         return eventService.getEvents();
     }
 
+    @GetMapping("/event/{eventId}")
+    Event getEvents(@PathVariable Long eventId){
+        return eventService.getEvent(eventId);
+    }
+
     @PostMapping("/addEvent/{accountId}")
     void addEvent(@RequestBody EventDto eventDto, @PathVariable Long accountId) {
         eventService.addEvent(eventDto, accountId);

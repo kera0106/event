@@ -144,7 +144,7 @@ class Header extends Component{
                                     <Button className="me-3 mt-1" onClick={this.toggleModal}><span className="fa fa-cogs fa-lg"></span> Настройки</Button>
                                 </NavItem>
                                 <NavItem>
-                                    <Button className="mt-3" onClick={this.toggleModal}><span className="fa fa-sign-out fa-lg"></span> Выход</Button>
+                                    <Button className="mt-3 mt-md-1" onClick={this.toggleModal}><span className="fa fa-sign-out fa-lg"></span> Выход</Button>
                                 </NavItem>
                             </Nav>
                             <Nav pills className="mt-3 mt-md-0 d-md-none">

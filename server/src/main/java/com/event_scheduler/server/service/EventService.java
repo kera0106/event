@@ -54,7 +54,7 @@ public class EventService {
     public void editEventName(Long accountId, Long eventId, EventDto eventDto){
         if (!checkRole(accountId, eventId, Role.WRITER))
             throw new UserHasNoRightsException();
-        Event event = eventRepository.findEventById(eventId);
+        Event event = eventRepository.findEventById(eventId).orElseThrow(EventAccountNotFoundException::new);
         event.setName(eventDto.getName());
         eventRepository.save(event);
     }
@@ -62,7 +62,7 @@ public class EventService {
     public void editEventDescription(Long accountId, Long eventId, EventDto eventDto){
         if (!checkRole(accountId, eventId, Role.WRITER))
             throw new UserHasNoRightsException();
-        Event event = eventRepository.findEventById(eventId);
+        Event event = eventRepository.findEventById(eventId).orElseThrow(EventAccountNotFoundException::new);
         event.setDescription(eventDto.getDescription());
         eventRepository.save(event);
     }
@@ -72,7 +72,7 @@ public class EventService {
         if (!(role == Role.MANAGER || role == Role.AUTHOR))
             throw new UserHasNoRightsException();
         Account account = accountRepository.findAccountById(eventAccountDto.getAccountId()).orElseThrow(AccountNotFoundException::new);
-        Event event = eventRepository.findEventById(eventAccountDto.getEventId());
+        Event event = eventRepository.findEventById(eventAccountDto.getEventId()).orElseThrow(EventAccountNotFoundException::new);
         EventAccount eventAccount = new EventAccount();
         eventAccount.setAccount(account);
         eventAccount.setEvent(event);
@@ -98,6 +98,10 @@ public class EventService {
 
     public List<Event> getEvents(){
         return eventRepository.findAll();
+    }
+
+    public Event getEvent(Long eventId){
+        return eventRepository.findEventById(eventId).orElseThrow(EventAccountNotFoundException::new);
     }
 
     private void setRole(Long accountId, Long eventId, Role role, boolean value){

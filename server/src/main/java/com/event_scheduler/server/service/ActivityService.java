@@ -31,7 +31,7 @@ public class ActivityService {
     private final EventAccountRepository eventAccountRepository;
 
     public void addActivity(Long eventId, List<ActivityDto> activityDtos){
-        Event event = eventRepository.findEventById(eventId);
+        Event event = eventRepository.findEventById(eventId).orElseThrow(EventAccountNotFoundException::new);
         List<Activity> activities = new ArrayList<>();
         activityDtos.forEach((activityDto -> {
             Activity activity = new Activity();

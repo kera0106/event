@@ -34,3 +34,9 @@
 .react-calendar__navigation__label {
   text-transform: capitalize;
 }
+
+.breadcrumb {
+  background-color: #dae2e8;
+  padding-top: 5px;
+  font-size: 14pt;
+}

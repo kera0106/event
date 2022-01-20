@@ -5,6 +5,7 @@ import Invitation from "./InvitationComponent";
 import Header from "./HeaderComponent";
 import {connect} from "react-redux";
 import {getAccountData} from "../redux/ActionCreators";
+import EventInfo from "./EventInfoComponent";
 
 const mapStateToProps = state => {
     return {
@@ -48,7 +49,8 @@ class Main extends Component{
                     <Route path='/home' element={<HomePage isLoading={this.props.accountData.isLoading}
                                                            errMess={this.props.accountData.errMess}
                                                            events={events}
-                    />}/>
+                                                    />}/>
+                    <Route path='/event/:eventId' element={<EventInfo/>}/>
                     <Route path='/invitations' element={<Invitation/>}/>
                     <Route path="*" element={<Navigate to ="/home" />}/>
                 </Routes>
