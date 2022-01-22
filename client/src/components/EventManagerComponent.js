@@ -1,6 +1,7 @@
 import {Component} from "react";
 import Calendar from 'react-calendar'
 import {Button} from "reactstrap";
+import {Link} from "react-router-dom";
 
 class EventManager extends Component{
 
@@ -19,9 +20,11 @@ class EventManager extends Component{
                         />
                     </div>
                     <div className="col-12 mt-2 mt-md-3 mb-5">
-                        <Button color="primary w-100">
-                            Создать мероприятие
-                        </Button>
+                        <Link to={'/createEvent'}>
+                            <Button color="primary w-100">
+                                Создать мероприятие
+                            </Button>
+                        </Link>
                     </div>
                 </div>
             </div>

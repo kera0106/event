@@ -6,6 +6,7 @@ import Header from "./HeaderComponent";
 import {connect} from "react-redux";
 import {getAccountData} from "../redux/ActionCreators";
 import EventInfo from "./EventInfoComponent";
+import CreateEventComponent from "./CreateEventComponent";
 
 const mapStateToProps = state => {
     return {
@@ -52,6 +53,7 @@ class Main extends Component{
                                                     />}/>
                     <Route path='/event/:eventId' element={<EventInfo/>}/>
                     <Route path='/invitations' element={<Invitation/>}/>
+                    <Route path='/createEvent' element={<CreateEventComponent/>}/>
                     <Route path="*" element={<Navigate to ="/home" />}/>
                 </Routes>
             </div>

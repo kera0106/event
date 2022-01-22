@@ -4,6 +4,7 @@ import {Link} from "react-router-dom";
 import {getEventData} from "../redux/ActionCreators";
 import {connect} from "react-redux";
 import {Loading} from "./LoadingComponent";
+import {BreadcrumbPanel} from "./BreadcrumbPanelComponent";
 
 const months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря']
 
@@ -46,22 +47,22 @@ const RenderActivitiesBlock = ({activities}) => {
                 <h4 className="offset-1 mt-3 mt-md-0">События:</h4>
                 <Table hover>
                     <thead>
-                    <tr>
-                        <th>
-                        </th>
-                        <th>
-                            Название
-                        </th>
-                        <th>
-                            Описание
-                        </th>
-                        <th>
-                            Время
-                        </th>
-                    </tr>
+                        <tr>
+                            <th>
+                            </th>
+                            <th>
+                                Название
+                            </th>
+                            <th>
+                                Описание
+                            </th>
+                            <th>
+                                Время
+                            </th>
+                        </tr>
                     </thead>
                     <tbody>
-                    <RenderActivity activities={activities}/>
+                        <RenderActivity activities={activities}/>
                     </tbody>
                 </Table>
             </div>
@@ -78,7 +79,6 @@ const RenderActivity = ({activities}) => {
         return activityTime1 - activityTime2
     })
     return activities.map((activity) => {
-        console.log(activity.start)
         return (
             <tr>
                 <th scope="row">
@@ -96,25 +96,6 @@ const RenderActivity = ({activities}) => {
             </tr>
         )
     })
-}
-
-const BreadcrumbPanel = ({location}) => {
-    return(
-        <div className="breadcrumb">
-            <div className="container">
-                <Breadcrumb>
-                    <BreadcrumbItem>
-                        <Link to={"/home"}>
-                            Мои мероприятия
-                        </Link>
-                    </BreadcrumbItem>
-                    <BreadcrumbItem active>
-                        {location}
-                    </BreadcrumbItem>
-                </Breadcrumb>
-            </div>
-        </div>
-    )
 }
 
 class EventInfo extends Component{
