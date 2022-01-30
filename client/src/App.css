@@ -41,6 +41,21 @@
   font-size: 14pt;
 }
 
-.deleteButton{
+.deleteButton {
   background-color: #c42104;
+}
+
+.btn:focus {
+  border: none;
+  box-shadow: none;
+  outline: 0 none;
+}
+
+.deleteButton:focus {
+  background-color: #c42104;
+}
+
+.conflictTableTitle {
+  background-color: #dae2e8;
+  text-align: center;
 }

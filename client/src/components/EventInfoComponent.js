@@ -1,6 +1,5 @@
 import {Component, Fragment} from "react";
 import {Breadcrumb, BreadcrumbItem, Table} from "reactstrap";
-import {Link} from "react-router-dom";
 import {getEventData} from "../redux/ActionCreators";
 import {connect} from "react-redux";
 import {Loading} from "./LoadingComponent";
@@ -21,10 +20,10 @@ const mapDispatchToProps = dispatch => ({
 const ActivityDateAndTime = ({start, finish}) => {
     let startDateTime = new Date(start)
     let startTime = ('0' + startDateTime.getHours()).slice(-2) + ':' + ('0' + startDateTime.getMinutes()).slice(-2)
-    let startDate = `${startDateTime.getDate()} ${months[startDateTime.getMonth()-1]} ${startDateTime.getUTCFullYear()}`
+    let startDate = `${startDateTime.getDate()} ${months[startDateTime.getMonth()]} ${startDateTime.getUTCFullYear()}`
     let finishDateTime = new Date(finish)
     let finishTime = ('0' + finishDateTime.getHours()).slice(-2) + ':' + ('0' + finishDateTime.getMinutes()).slice(-2)
-    let finishDate = `${finishDateTime.getDate()} ${months[finishDateTime.getMonth()-1]} ${finishDateTime.getUTCFullYear()}`
+    let finishDate = `${finishDateTime.getDate()} ${months[finishDateTime.getMonth()]} ${finishDateTime.getUTCFullYear()}`
     return(
         <Fragment>
             <p>{`${startDate}, ${startTime} -`}</p>

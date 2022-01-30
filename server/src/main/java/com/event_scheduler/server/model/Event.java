@@ -25,5 +25,6 @@ public class Event {
     private List<EventAccount> eventAccounts;
 
     @OneToMany(mappedBy = "event")
+    @JsonIgnoreProperties("event")
     private List<Activity> activities;
 }

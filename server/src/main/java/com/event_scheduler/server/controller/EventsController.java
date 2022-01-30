@@ -2,9 +2,11 @@ package com.event_scheduler.server.controller;
 
 import com.event_scheduler.server.dto.EventAccountDto;
 import com.event_scheduler.server.dto.EventDto;
+import com.event_scheduler.server.dto.EventWithActivitiesDto;
 import com.event_scheduler.server.enums.Role;
 import com.event_scheduler.server.exceptions.AccountNotFoundException;
 import com.event_scheduler.server.exceptions.EventAccountNotFoundException;
+import com.event_scheduler.server.exceptions.FinishDateBeforeStartException;
 import com.event_scheduler.server.exceptions.UserHasNoRightsException;
 import com.event_scheduler.server.model.Event;
 import com.event_scheduler.server.service.EventService;
@@ -31,8 +33,13 @@ public class EventsController {
     }
 
     @PostMapping("/addEvent/{accountId}")
-    void addEvent(@RequestBody EventDto eventDto, @PathVariable Long accountId) {
-        eventService.addEvent(eventDto, accountId);
+    Long addEvent(@RequestBody EventDto eventDto, @PathVariable Long accountId) {
+        return eventService.addEvent(eventDto, accountId);
+    }
+
+    @PostMapping("/addEventWithActivities/{accountId}")
+    void addEventWithActivities(@RequestBody EventWithActivitiesDto eventWithActivitiesDto, @PathVariable Long accountId) {
+        eventService.addEventWithActivities(eventWithActivitiesDto, accountId);
     }
 
     @PutMapping("/editEventName/{accountId}/{eventId}")
@@ -92,6 +99,11 @@ public class EventsController {
 
     @ExceptionHandler(UserHasNoRightsException.class)
     public ResponseEntity handleException(UserHasNoRightsException e) {
+        return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
+    }
+
+    @ExceptionHandler(FinishDateBeforeStartException.class)
+    public ResponseEntity handleException(FinishDateBeforeStartException e) {
         return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
     }
 }

@@ -2,6 +2,7 @@ package com.event_scheduler.server.service;
 
 import com.event_scheduler.server.dto.EventAccountDto;
 import com.event_scheduler.server.dto.EventDto;
+import com.event_scheduler.server.dto.EventWithActivitiesDto;
 import com.event_scheduler.server.enums.Role;
 import com.event_scheduler.server.exceptions.AccountNotFoundException;
 import com.event_scheduler.server.exceptions.EventAccountNotFoundException;
@@ -28,8 +29,10 @@ public class EventService {
 
     private final EventAccountRepository eventAccountRepository;
 
+    private final ActivityService activityService;
+
     @Transactional
-    public void addEvent(EventDto eventDto, Long accountId){
+    public Long addEvent(EventDto eventDto, Long accountId){
         Event event = new Event();
         event.setName(eventDto.getName());
         event.setDescription(eventDto.getDescription());
@@ -42,7 +45,23 @@ public class EventService {
         eventAccount.setManager(true);
         eventAccount.setWriter(true);
         eventAccount.setAccepted(true);
-        eventAccountRepository.save(eventAccount);
+        return eventAccountRepository.save(eventAccount).getEvent().getId();
+    }
+
+    @Transactional
+    public void addEventWithActivities(EventWithActivitiesDto event, Long accountId){
+        EventDto eventDto = new EventDto();
+        eventDto.setName(event.getName());
+        eventDto.setDescription(event.getDescription());
+        long eventId = addEvent(eventDto, accountId);
+        try {
+            activityService.addActivity(eventId, event.getActivities());
+        }
+        catch (RuntimeException exception){
+            eventRepository.deleteEventById(eventId);
+            eventAccountRepository.deleteByAccount_IdAndEvent_Id(accountId, eventId);
+            throw exception;
+        }
     }
 
     public void removeEvent(Long accountId, Long eventId){
