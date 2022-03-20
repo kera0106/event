@@ -80,7 +80,7 @@ const RenderConflictEvent = ({event}) => {
   )
 }
 
-class ConflictActivities extends Component{
+class CreateConflictActivities extends Component{
     constructor(props) {
         super(props);
         this.conflictEvents = [];
@@ -88,7 +88,7 @@ class ConflictActivities extends Component{
             isErrorWindowOpen: false,
             errorMessage: ''
         }
-        this.divideActivitiesByEvents(JSON.parse(sessionStorage.getItem('conflictActivities')))
+        this.divideActivitiesByEvents(JSON.parse(sessionStorage.getItem('createConflictActivities')))
 
         this.toggleErrorWindow = this.toggleErrorWindow.bind(this)
         this.saveEvent = this.saveEvent.bind(this)
@@ -144,7 +144,7 @@ class ConflictActivities extends Component{
             .then(response => response.data)
             .then(() => {
                 sessionStorage.removeItem('createEventData')
-                sessionStorage.removeItem('conflictActivities')
+                sessionStorage.removeItem('createConflictActivities')
                 window.location = '/home'
             })
             .catch(error => {
@@ -220,4 +220,4 @@ class ConflictActivities extends Component{
     }
 }
 
-export default ConflictActivities
+export default CreateConflictActivities

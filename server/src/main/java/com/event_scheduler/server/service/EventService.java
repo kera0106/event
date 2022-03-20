@@ -86,6 +86,15 @@ public class EventService {
         eventRepository.save(event);
     }
 
+    public void editEvent(Long accountId, Long eventId, EventDto eventDto){
+        if (!checkRole(accountId, eventId, Role.WRITER))
+            throw new UserHasNoRightsException();
+        Event event = eventRepository.findEventById(eventId).orElseThrow(EventAccountNotFoundException::new);
+        event.setName(eventDto.getName());
+        event.setDescription(eventDto.getDescription());
+        eventRepository.save(event);
+    }
+
     public void shareEvent(Long accountId, EventAccountDto eventAccountDto){
         Role role = getRole(accountId, eventAccountDto.getEventId());
         if (!(role == Role.MANAGER || role == Role.AUTHOR))

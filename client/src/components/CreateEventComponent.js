@@ -378,8 +378,8 @@ class CreateEvent extends Component{
                             errors: this.state.errors
                         }
                         sessionStorage.setItem('createEventData', JSON.stringify(createEventData))
-                        sessionStorage.setItem('conflictActivities', JSON.stringify(response))
-                        window.location = '/conflictActivities'
+                        sessionStorage.setItem('createConflictActivities', JSON.stringify(response))
+                        window.location = '/createConflictActivities'
                     }
                     else{
                         this.saveEvent(userId, this.state.eventData)
@@ -414,7 +414,7 @@ class CreateEvent extends Component{
             .then(response => response.data)
             .then(() => {
                 sessionStorage.removeItem('createEventData')
-                sessionStorage.removeItem('conflictActivities')
+                sessionStorage.removeItem('createConflictActivities')
                 window.location = '/home'
             })
             .catch(error => {

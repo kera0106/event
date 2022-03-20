@@ -5,6 +5,7 @@ import {connect} from "react-redux";
 import {Loading} from "./LoadingComponent";
 import {BreadcrumbPanel} from "./BreadcrumbPanelComponent";
 import * as UserRoles from "./userRoles/UserRoles";
+import serverApi from "../api/serverApi";
 
 const months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря']
 
@@ -100,90 +101,31 @@ const RenderActivity = ({activities}) => {
     })
 }
 
-const ButtonPanelForBigScreen = ({role, edit}) => {
-    if (role === UserRoles.AUTHOR){
-        return(
-            <div className="mt-4 d-none d-md-block">
-                <Button className="bg-danger col-10 mt-2 mb-2">Отписаться &nbsp;<span className="fa fa-calendar-times-o fa-lg"></span></Button>
-                <Button className="bg-primary col-10 mt-2 mb-2" onClick={edit}>Редактировать &nbsp;<span className="fa fa-edit fa-lg"></span></Button>
-                <Button className="bg-success col-10 mt-2 mb-2">Поделиться &nbsp;<span className="fa fa-share fa-lg"></span></Button>
-                <Button className="bg-success col-10 mt-2 mb-2">Назначить роль &nbsp;<span className="fa fa-user-circle fa-lg"></span></Button>
-            </div>
-        )
-    }
-
-    else if (role === UserRoles.WRITER){
-        return(
-            <div className="mt-4 d-none d-md-block">
-                <Button className="bg-danger col-10 mt-2 mb-2">Отписаться &nbsp;<span className="fa fa-calendar-times-o fa-lg"></span></Button>
-                <Button className="bg-primary col-10 mt-2 mb-2" onClick={edit}>Редактировать &nbsp;<span className="fa fa-edit fa-lg"></span></Button>
-            </div>
-        )
-    }
-
-    else if (role === UserRoles.MANAGER){
-        return(
-            <div className="mt-4 d-none d-md-block">
-                <Button className="bg-danger col-10 mt-2 mb-2">Отписаться &nbsp;<span className="fa fa-calendar-times-o fa-lg"></span></Button>
-                <Button className="bg-success col-10 mt-2 mb-2">Поделиться &nbsp;<span className="fa fa-share fa-lg"></span></Button>
-            </div>
-        )
-    }
-
-    else {
-        return(
-            <div className="mt-4 d-none d-md-block">
-                <Button className="bg-danger col-10 mt-2 mb-2">Отписаться &nbsp;<span className="fa fa-calendar-times-o fa-lg"></span></Button>
-            </div>
-        )
-    }
+const ButtonPanelForBigScreen = ({accept, reject}) => {
+    return(
+        <div className="mt-4 d-none d-md-block">
+            <Button className="bg-danger col-10 mt-2 mb-2" onClick={reject}>Отклонить &nbsp;<span className="fa fa-solid fa-ban fa-lg"></span></Button>
+            <Button className="bg-success col-10 mt-2 mb-2" onClick={accept}>Принять &nbsp;<span className="fa fa-solid fa-check fa-lg"></span></Button>
+        </div>
+    )
 }
 
-const ButtonPanelForSmallScreen = ({role, edit}) => {
-    if (role === UserRoles.AUTHOR){
-        return(
-            <div className="mt-4 d-md-none mb-5">
-                <Button className="bg-danger col-12 mt-3 mb-2">Отписаться &nbsp;<span className="fa fa-calendar-times-o fa-lg"></span></Button>
-                <Button className="bg-primary col-12 mt-3 mb-2" onClick={edit}>Редактировать &nbsp;<span className="fa fa-edit fa-lg"></span></Button>
-                <Button className="bg-success col-12 mt-3 mb-2">Поделиться &nbsp;<span className="fa fa-share fa-lg"></span></Button>
-                <Button className="bg-success col-12 mt-2 mb-2">Назначить роль &nbsp;<span className="fa fa-user-circle fa-lg"></span></Button>
-            </div>
-        )
-    }
-
-    else if (role === UserRoles.WRITER){
-        return(
-            <div className="mt-4 d-md-none mb-5">
-                <Button className="bg-danger col-12 mt-3 mb-2">Отписаться &nbsp;<span className="fa fa-calendar-times-o fa-lg"></span></Button>
-                <Button className="bg-primary col-12 mt-3 mb-2" onClick={edit}>Редактировать &nbsp;<span className="fa fa-edit fa-lg"></span></Button>
-            </div>
-        )
-    }
-
-    else if (role === UserRoles.MANAGER){
-        return(
-            <div className="mt-4 d-md-none mb-5">
-                <Button className="bg-danger col-12 mt-3 mb-2">Отписаться &nbsp;<span className="fa fa-calendar-times-o fa-lg"></span></Button>
-                <Button className="bg-success col-12 mt-3 mb-2">Поделиться &nbsp;<span className="fa fa-share fa-lg"></span></Button>
-            </div>
-        )
-    }
-
-    else {
-        return(
-            <div className="mt-4 d-md-none mb-5">
-                <Button className="bg-danger col-12 mt-3 mb-2">Отписаться &nbsp;<span className="fa fa-calendar-times-o fa-lg"></span></Button>
-            </div>
-        )
-    }
+const ButtonPanelForSmallScreen = ({accept, reject}) => {
+    return(
+        <div className="mt-4 d-md-none mb-5">
+            <Button className="bg-danger col-12 mt-3 mb-2" onClick={reject}>Отклонить &nbsp;<span className="fa fa-solid fa-ban fa-lg"></span></Button>
+            <Button className="bg-success col-12 mt-2 mb-2" onClick={accept}>Принять &nbsp;<span className="fa fa-solid fa-check fa-lg"></span></Button>
+        </div>
+    )
 }
 
-class EventInfo extends Component{
+class InvitationEventInfo extends Component{
 
     constructor(props) {
         super(props);
 
-        this.edit = this.edit.bind(this)
+        this.accept = this.accept.bind(this)
+        this.reject = this.reject.bind(this)
     }
 
     componentDidMount() {
@@ -191,9 +133,19 @@ class EventInfo extends Component{
         this.props.getRole();
     }
 
-    edit() {
-        sessionStorage.setItem('editEventData', JSON.stringify(this.props.eventData.data))
-        window.location = `/editEvent/${this.props.eventData.data.id}`
+    accept() {
+        const accountId = localStorage.getItem('userId')
+        const eventId = this.props.eventData.data.id
+        serverApi.confirmInvitation(accountId, eventId)
+        window.location.reload()
+        window.location = `/invitations`
+    }
+
+    reject() {
+        const accountId = localStorage.getItem('userId')
+        const eventId = this.props.eventData.data.id
+        serverApi.deleteEvent(accountId, eventId)
+        window.location = `/invitations`
     }
 
     render() {
@@ -230,10 +182,10 @@ class EventInfo extends Component{
                             <div className="col-12 col-md-4">
                                 <h3> {this.props.eventData.data.name}</h3>
                                 <h6 className="mt-4"> {this.props.eventData.data.description}</h6>
-                                <ButtonPanelForBigScreen role={this.props.eventData.role} edit={this.edit}/>
+                                <ButtonPanelForBigScreen accept={this.accept} reject={this.reject}/>
                             </div>
                             <RenderActivitiesBlock activities={this.props.eventData.data.activities}/>
-                            <ButtonPanelForSmallScreen role={this.props.eventData.role} edit={this.edit}/>
+                            <ButtonPanelForSmallScreen accept={this.accept} reject={this.reject}/>
                         </div>
                     </div>
                 </div>
@@ -242,4 +194,4 @@ class EventInfo extends Component{
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(EventInfo)
+export default connect(mapStateToProps, mapDispatchToProps)(InvitationEventInfo)

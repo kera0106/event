@@ -52,6 +52,11 @@ public class EventsController {
         eventService.editEventDescription(accountId, eventId, eventDto);
     }
 
+    @PutMapping("/editEvent/{accountId}/{eventId}")
+    void editEvent(@PathVariable Long accountId, @PathVariable Long eventId, @RequestBody EventDto eventDto){
+        eventService.editEvent(accountId, eventId, eventDto);
+    }
+
     @DeleteMapping("/deleteEvent/{accountId}/{eventId}")
     void deleteEvent(@PathVariable Long accountId, @PathVariable Long eventId){
         eventService.removeEvent(accountId, eventId);

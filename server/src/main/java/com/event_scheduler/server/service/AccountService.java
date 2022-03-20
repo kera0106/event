@@ -1,11 +1,9 @@
 package com.event_scheduler.server.service;
 
 import com.event_scheduler.server.dto.AccountDto;
-import com.event_scheduler.server.dto.EventDto;
 import com.event_scheduler.server.exceptions.LoginAlreadyExists;
 import com.event_scheduler.server.exceptions.AccountNotFoundException;
 import com.event_scheduler.server.model.Account;
-import com.event_scheduler.server.model.Event;
 import com.event_scheduler.server.repository.AccountRepository;
 import com.event_scheduler.server.repository.EventAccountRepository;
 import lombok.RequiredArgsConstructor;

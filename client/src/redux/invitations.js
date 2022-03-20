@@ -1,23 +1,19 @@
-import * as ActionTypes from "./ActionTypes"
+import * as ActionTypes from "./ActionTypes";
 
-export const EventData = (state = {
+export const Invitations = (state = {
     isLoading: true,
     errMess: null,
-    role: null,
     data:{}
 }, action) => {
     switch (action.type){
-        case ActionTypes.ADD_EVENT_DATA:
+        case ActionTypes.ADD_INVITATIONS:
             return {...state, errMess: null, isLoading: false, data: action.payload};
 
-        case ActionTypes.EVENT_DATA_FAILED:
+        case ActionTypes.INVITATIONS_FAILED:
             return {...state, isLoading: false, errMess: action.payload};
 
-        case ActionTypes.EVENT_DATA_LOADING:
+        case ActionTypes.INVITATIONS_LOADING:
             return {...state, isLoading: true, errMess: null, data: {}}
-
-        case ActionTypes.SET_ROLE_IN_EVENT:
-            return {...state, role: action.payload}
 
         default:
             return state

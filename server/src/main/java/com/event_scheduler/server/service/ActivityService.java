@@ -76,6 +76,21 @@ public class ActivityService {
         activityRepository.save(activity);
     }
 
+    public void editActivity(Long accountId, Long eventId, Long activityId, ActivityDto activityDto){
+        if (!checkRole(accountId, eventId, Role.WRITER))
+            throw new UserHasNoRightsException();
+        Activity activity = activityRepository.findActivityById(activityId);
+        LocalDateTime start = LocalDateTime.of(activityDto.getStartDate(), activityDto.getStartTime());
+        LocalDateTime finish = LocalDateTime.of(activityDto.getFinishDate(), activityDto.getFinishTime());
+        if (start.isAfter(finish))
+            throw new FinishDateBeforeStartException();
+        activity.setName(activityDto.getName());
+        activity.setDescription(activityDto.getDescription());
+        activity.setStart(start);
+        activity.setFinish(finish);
+        activityRepository.save(activity);
+    }
+
     public void editActivityFinish(Long accountId, Long eventId, Long activityId, ActivityDto activityDto){
         if (!checkRole(accountId, eventId, Role.WRITER))
             throw new UserHasNoRightsException();
@@ -117,6 +132,17 @@ public class ActivityService {
             LocalDateTime start = LocalDateTime.of(activityDto.getStartDate(), activityDto.getStartTime());
             LocalDateTime finish = LocalDateTime.of(activityDto.getFinishDate(), activityDto.getFinishTime());
             conflictActivities.addAll(activityRepository.activitiesAtPeriod(accountId, start, finish));
+        }));
+        removeRepeatActivities(conflictActivities);
+        return conflictActivities;
+    }
+
+    public List<Activity> getConflictActivitiesExceptEvent(Long accountId, Long eventId, List<ActivityDto> activityDtos){
+        List<Activity> conflictActivities = new ArrayList<>();
+        activityDtos.forEach((activityDto -> {
+            LocalDateTime start = LocalDateTime.of(activityDto.getStartDate(), activityDto.getStartTime());
+            LocalDateTime finish = LocalDateTime.of(activityDto.getFinishDate(), activityDto.getFinishTime());
+            conflictActivities.addAll(activityRepository.activitiesAtPeriodExceptEvent(accountId, eventId, start, finish));
         }));
         removeRepeatActivities(conflictActivities);
         return conflictActivities;

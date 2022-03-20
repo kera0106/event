@@ -43,6 +43,11 @@ public class ActivityController {
         activityService.editActivityFinish(accountId, eventId, activityId, activityDto);
     }
 
+    @PutMapping("/editActivity/{accountId}/{eventId}/{activityId}")
+    void editActivity(@PathVariable Long accountId, @PathVariable Long eventId, @PathVariable Long activityId, @RequestBody ActivityDto activityDto){
+        activityService.editActivity(accountId, eventId, activityId, activityDto);
+    }
+
     @DeleteMapping("/deleteActivity/{accountId}/{eventId}/{activityId}")
     void deleteActivity(@PathVariable Long accountId, @PathVariable Long eventId, @PathVariable Long activityId){
         activityService.removeActivity(accountId, eventId, activityId);
@@ -56,6 +61,11 @@ public class ActivityController {
     @PostMapping("/conflictActivities/{accountId}")
     List<Activity> getConflictActivities(@PathVariable Long accountId, @RequestBody List<ActivityDto> activityDtos){
         return activityService.getConflictActivities(accountId, activityDtos);
+    }
+
+    @PostMapping("/conflictActivities/{accountId}/{eventId}")
+    List<Activity> getConflictActivitiesExceptEvent(@PathVariable Long accountId, @PathVariable Long eventId, @RequestBody List<ActivityDto> activityDtos){
+        return activityService.getConflictActivitiesExceptEvent(accountId, eventId, activityDtos);
     }
 
     @GetMapping("/activities")

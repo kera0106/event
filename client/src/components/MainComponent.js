@@ -4,24 +4,30 @@ import HomePage from "./HomeComponent"
 import Invitation from "./InvitationComponent";
 import Header from "./HeaderComponent";
 import {connect} from "react-redux";
-import {getAccountData} from "../redux/ActionCreators";
+import {getAccountData, getInvitations} from "../redux/ActionCreators";
 import EventInfo from "./EventInfoComponent";
 import CreateEventComponent from "./CreateEventComponent";
-import ConflictActivities from "./ConflictActivitiesComponent";
+import CreateConflictActivities from "./CreateConflictActivitiesComponent";
+import EditEvent from "./EditEventComponent";
+import EditConflictActivities from "./EditConflictActivitiesComponent";
+import InvitationEventInfo from "./InvitationEventInfoComponent";
 
 const mapStateToProps = state => {
     return {
-        accountData: state.accountData
+        accountData: state.accountData,
+        invitations: state.invitations
     }
 }
 
 const mapDispatchToProps = dispatch => ({
     getAccountData: () => { dispatch(getAccountData())},
+    getInvitationsEvents: () => { dispatch(getInvitations())},
 });
 
 class Main extends Component{
     componentDidMount() {
         this.props.getAccountData()
+        this.props.getInvitationsEvents()
     }
 
     render() {
@@ -36,13 +42,27 @@ class Main extends Component{
         const eventAccounts = this.props.accountData.data.eventAccounts
         if (eventAccounts)
             eventAccounts.forEach(eventAccount => {
-                let event = {
-                    id: eventAccount.event.id,
-                    name: eventAccount.event.name,
-                    description: eventAccount.event.description,
+                if (eventAccount.accepted) {
+                    let event = {
+                        id: eventAccount.event.id,
+                        name: eventAccount.event.name,
+                        description: eventAccount.event.description,
+                    }
+                    events.push(event)
                 }
-                events.push(event)
         })
+
+        const invitationsForRender = []
+        const invitations = this.props.invitations.data.data
+        if (invitations)
+            invitations.forEach(invitation => {
+                let invitationForRender = {
+                    id: invitation.id,
+                    name:invitation.name,
+                    description: invitation.description,
+                }
+                invitationsForRender.push(invitationForRender)
+            })
 
         return(
             <div>
@@ -53,9 +73,15 @@ class Main extends Component{
                                                            events={events}
                                                     />}/>
                     <Route path='/event/:eventId' element={<EventInfo/>}/>
-                    <Route path='/invitations' element={<Invitation/>}/>
+                    <Route path='/invitationEvent/:eventId' element={<InvitationEventInfo/>}/>
+                    <Route path='/invitations' element={<Invitation isLoading={this.props.invitations.isLoading}
+                                                                    errMess={this.props.invitations.errMess}
+                                                                    invitations={invitations}
+                                                        />}/>
                     <Route path='/createEvent' element={<CreateEventComponent/>}/>
-                    <Route path='/conflictActivities' element={<ConflictActivities/>}/>
+                    <Route path='/createConflictActivities' element={<CreateConflictActivities/>}/>
+                    <Route path='/editConflictActivities' element={<EditConflictActivities/>}/>
+                    <Route path='/editEvent/:eventId' element={<EditEvent/>}/>
                     <Route path="*" element={<Navigate to ="/home" />}/>
                 </Routes>
             </div>

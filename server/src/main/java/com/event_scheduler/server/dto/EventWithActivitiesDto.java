@@ -1,6 +1,5 @@
 package com.event_scheduler.server.dto;
 
-import com.event_scheduler.server.model.Activity;
 import lombok.Data;
 
 import java.util.List;
